@@ -39,9 +39,6 @@ const PokemonCard = ({ name, isSelected, onSelect }) => {
               <div>
                 <strong>Types:</strong> {pokemonDetails.types.map(type => type.type.name).join(', ')}
               </div>
-              <div>
-                <strong>Abilities:</strong> {pokemonDetails.abilities.map(ability => ability.ability.name).join(', ')}
-              </div>
             </div>
           )}
         </div>

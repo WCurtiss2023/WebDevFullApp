@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PokemonCard from './PokemonCard';
+import pokemonLogo from './blackLogo.png';
+import SearchBar from './SearchBar';
+
+
 
 const MainComponent = () => {
   const [pokemonList, setPokemonList] = useState([]);
@@ -12,7 +16,7 @@ const MainComponent = () => {
     const fetchPokemon = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025');
         const data = await response.json();
         setPokemonList(data.results);
         setIsLoading(false);
@@ -49,10 +53,59 @@ const MainComponent = () => {
     setSelectedPokemon(pokemonName); // Update the selected Pokémon state variable
   };
 
+  const handleSearch = async (query) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
+      const data = await response.json();
+      setPokemonList([data]);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div>
-      <h1>Pokémon API Frontend</h1>
-      <div className="pokemon-list">
+    <div class='container'>
+      <img src={pokemonLogo} alt="Pokemon Logo" />
+
+      <h1 class="flex-container">Search Engine</h1>
+
+
+      <SearchBar onSearch={handleSearch} />
+
+      <div className="pokemon-details-flex-item">
+        {/* Render details of the selected Pokémon */}
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error: {error}</div>
+        ) : pokemonDetails ? (
+          <div flex-item>
+            <h2>{pokemonDetails.name}</h2>
+            <img src={pokemonDetails.sprites.front_default} alt={pokemonDetails.name} />
+            <div>
+              <strong>Types:</strong> {pokemonDetails.types.map(type => type.type.name).join(', ')}
+            </div>
+            <div>
+              <strong>Abilities:</strong> {pokemonDetails.abilities.map(ability => ability.ability.name).join(', ')}
+            </div>
+            <div>
+              {pokemonDetails.stats.map((stat) => (
+                <div key={stat.stat.name}>
+                  <strong>{stat.stat.name}:</strong> {stat.base_stat}
+           </div>
+  ))}
+</div>
+            
+          </div>
+        ) : (
+          <div>No Pokémon selected</div>
+        )}
+      </div>
+
+      <div className="pokemon-list-flex-item">
         {/* Render Pokémon cards */}
         {pokemonList.map(pokemon => (
           <PokemonCard 
@@ -63,27 +116,9 @@ const MainComponent = () => {
           />
         ))}
       </div>
-      <div className="pokemon-details">
-        {/* Render details of the selected Pokémon */}
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>Error: {error}</div>
-        ) : pokemonDetails ? (
-          <div>
-            <h2>{pokemonDetails.name}</h2>
-            <img src={pokemonDetails.sprites.front_default} alt={pokemonDetails.name} />
-            <div>
-              <strong>Types:</strong> {pokemonDetails.types.map(type => type.type.name).join(', ')}
-            </div>
-            <div>
-              <strong>Abilities:</strong> {pokemonDetails.abilities.map(ability => ability.ability.name).join(', ')}
-            </div>
-          </div>
-        ) : (
-          <div>No Pokémon selected</div>
-        )}
-      </div>
+
+
+     
     </div>
   );
 };
