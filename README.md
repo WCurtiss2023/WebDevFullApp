@@ -1,7 +1,5 @@
 Link to actual app: https://663bb11ce4a6a307a71d56ad--transcendent-arithmetic-c80009.netlify.app/
 
-# Getting Started with Create React App
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
